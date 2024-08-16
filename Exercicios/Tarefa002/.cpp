@@ -1,29 +1,16 @@
-//#include <studio.h>
-//#include <studlib.h>
-//Int main () {
-//int N_atual, Quantidade,visitante;
-  //printf("Informe a atual quantidade de visitantes:%")
-    //scanf("%i",&N_atual);
-    //Scanf("%i",&Quantidade);
-    //scnaf("%i", &visistantes);
-  //Quantidade = N_atual + visitantes;
-  //printf("O total de visitantes é:"%i",Quantidade);
-//Return(0)
-//}
+#include <stdio.h>
 
-#include <studio.h>
-
-Int main () {
+int main () {
 int N_atual,Quantidade,visitantes;
-  printf("Informe a atual quantidade de visitantes:%i",N_atual);
-    scanf("%i",&N_atual);
+  printf("Informe a atual quantidade de visitantes:%d",N_atual);
+    scanf("%d",&N_atual);
 
-  printf("Informe quantos visitantes entraram:%i",visitantes);
-    scanf("%i", &visitantes);
+  printf("Informe quantos visitantes entraram:%d",visitantes);
+    scanf("%d", &visitantes);
     
   Quantidade = N_atual + visitantes;
-  printf("O total de visitantes é:%i",Quantidade);
-    scanf("%i",&Quantidade);
+  printf("O total de visitantes é:%d",Quantidade);
+    scanf("%d",&Quantidade);
     
-Return(0);
+return 0;
 }
