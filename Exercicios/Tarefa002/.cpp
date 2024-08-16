@@ -14,11 +14,11 @@
 #include <studio.h>
 
 Int main () {
-int N_atual, Quantidade,visitantes;
-  printf("Informe a atual quantidade de visitantes:%i",)
+int N_atual,Quantidade,visitantes;
+  printf("Informe a atual quantidade de visitantes:%i",N_atual);
     scanf("%i",&N_atual);
 
-  printf("Informe quantos visitantes entraram:%i",visitantes)
+  printf("Informe quantos visitantes entraram:%i",visitantes);
     scanf("%i", &visitantes);
     
   Quantidade = N_atual + visitantes;
