@@ -11,6 +11,7 @@ int N_atual,Quantidade,visitantes;
   Quantidade = N_atual + visitantes;
   printf("O total de visitantes é:%d",Quantidade);
     scanf("%d",&Quantidade);
+  printf( "Número de visitantes atualizado");
     
 return 0;
 }
