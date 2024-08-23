@@ -1,1 +1,24 @@
+#include<std.h>
+#include<stdlib.h>
+#include<math.h>
+
+int main() {
+/função da função MOD retorna o resto da divisão/
+  /10MOD2/
+ float nota1,nota2,nota3,media;
+    printf("digite a nota1:");
+    scanf("%f",& nota1);
+    printf("digite a nota2:");
+    scanf("%f",& nota2);
+    printf("digite a nota3:");
+    scanf("%f",& nota3);
+    media=(nota1+nota2+nota3)/3;
+    printf("sua media é:%f",media);
+
+
+
+
+
+return(0);
+}
 
