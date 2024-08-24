@@ -1,11 +1,13 @@
-#include<std.h>
+#include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
 
-int main() {
-/função da função MOD retorna o resto da divisão/
-  /10MOD2/
+int main(){
+refaz:
+//função da função MOD retorna o resto da divisão
+  //10MOD2
  float nota1,nota2,nota3,media;
+ char opcao;
     printf("digite a nota1:");
     scanf("%f",& nota1);
     printf("digite a nota2:");
@@ -14,11 +16,12 @@ int main() {
     scanf("%f",& nota3);
     media=(nota1+nota2+nota3)/3;
     printf("sua media é:%f",media);
-
-
-
-
-
-return(0);
+    
+if (media>=5){
+  printf("Parabéns, você foi aprovado.Sua média é:%f",media);
+  printf(" Deseja calcular novamente?(S/N");
+  scanf("%s",&opcao);}
+  
+if(opcao=="S"){
+    goto refaz;
 }
-
