@@ -1,0 +1,62 @@
+#include <stdio.h>
+
+int main(){
+    float num1, num2,soma,sub, divis,mult;
+    char status;
+    char opcao;
+    refaz:
+    printf("Escolha sua operação:");
+    scanf("%s",&status);
+switch (status) {
+case '+':
+    printf ("Digite o primeiro numero: ");
+    scanf("%f",&num1);
+    printf ("Digite o segundo numero: ");
+    scanf("%f",&num2);
+    soma = num1 + num2;
+    printf("O resultado da operacao eh:%f",soma);
+     break;
+
+case '-':
+    printf ("Digite o primeiro numero: ");
+    scanf("%f",&num1);
+    printf ("Digite o segundo numero: ");
+    scanf("%f",&num2);
+    sub = num1 - num2;
+    printf("O resultado da operacao eh:%f",sub);
+     break;
+
+case '*':
+    printf ("Digite o primeiro numero: ");
+    scanf("%f",&num1);
+    printf ("Digite o segundo numero: ");
+    scanf("%f",&num2);
+    mult = num1 * num2;
+    printf("O resultado da operacao eh:%f",mult);
+     break;
+
+case '/':
+    printf ("Digite o primeiro numero: ");
+    scanf("%f",&num1);
+    printf ("Digite o segundo numero: ");
+    scanf("%f",&num2);
+        if (num2 == 0){
+            printf(" O calculo nn pode ser realizado");
+        }
+        else {
+    divis = num1 / num2;
+    printf("O resultado da operacao eh:%f",divis);
+    }
+    break;
+}
+    printf(" Deseja calcular novamente?(s/n)");
+  scanf("%s",&opcao);
+if(opcao == 's'){
+    goto refaz;
+}
+else {
+    printf("Calculo encerrado");
+}
+
+return 0;
+}
