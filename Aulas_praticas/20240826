@@ -15,7 +15,7 @@ if (status == 0) {
     soma = num1 + num2;
     printf("O resultado da operacao eh:%f",soma);}
 
-if (status == 1) {
+elseif (status == 1) {
     printf ("Digite o primeiro numero: ");
     scanf("%f",&num1);
     printf ("Digite o segundo numero: ");
@@ -23,7 +23,7 @@ if (status == 1) {
     sub = num1 - num2;
     printf("O resultado da operacao eh:%f",sub);}
     
-if (status == 2) {
+elseif (status == 2) {
     printf ("Digite o primeiro numero: ");
     scanf("%f",&num1);
     printf ("Digite o segundo numero: ");
@@ -31,7 +31,7 @@ if (status == 2) {
     mult = num1 * num2;
     printf("O resultado da operacao eh:%f",mult);}
     
-if (status == 3) {
+elseif (status == 3) {
     printf ("Digite o primeiro numero: ");
     scanf("%f",&num1);
     printf ("Digite o segundo numero: ");
