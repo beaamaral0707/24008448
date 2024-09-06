@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+float nota_trab,aval_sem,exame,media;
+char conceito;
+char opcao;
+refaz:
+
+printf("Digite a nota do trabalho em laboratorio:");
+scanf("%f",&nota_trab);
+
+printf("Digite a nota da avaliacao: ");
+scanf("%f",&aval_sem);
+
+printf("Digite a nota do exame final: ");
+scanf("%f",&exame);
+    if ((nota_trab || aval_sem || exame > 10 ) || (nota_trab || aval_sem || exame <0)){
+        printf("Calculo invalido,repita o procedimento.\n");
+        goto refaz;
+    }
+media = (nota_trab*2 + aval_sem*3 + exame*5)/10;
+
+   if (media > 8 && media <10){
+    printf("Conceito A");
+   }
+   else if (media > 7 && media >7.99) {
+    printf("Conceito B");
+   }
+   else if (media > 6 && media >6.99) {
+    printf("Conceito C");
+   }
+   else if (media > 5 && media >5.99) {
+    printf("Conceito D");
+   }
+   else if (media > 0 && media > 4.99) {
+    printf("Conceito E");
+   }
+    printf(" Deseja calcular novamente?(s/n)");
+  scanf("%s",&opcao);
+if(opcao == 's'){
+    goto refaz;
+}
+   return 0;
+}
+
