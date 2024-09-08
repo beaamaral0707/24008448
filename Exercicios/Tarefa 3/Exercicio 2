@@ -1,0 +1,55 @@
+//A)Escreva um programa que leia três números e os imprima na ordem inversa da que foram digitados.
+#include <stdio.h>
+#include <stdio.lib>
+
+
+
+
+
+//B)Escreva um programa para simular uma pequena conversa do computador com o usuário. O programa deve seguir os passos:
+#include <stdio.h>
+
+int main() {
+char myname
+
+  printf( "Olá eu sou o Nº 1, como é seu nome?");
+  printf("Meu nome é: %c",myname);
+  scanf("%c",&myname);
+  prinf("Bem-vindo ao clube my name )"
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
