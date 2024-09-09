@@ -7,28 +7,120 @@
 
 
 //B)Escreva um programa para simular uma pequena conversa do computador com o usuário. O programa deve seguir os passos:
+
 #include <stdio.h>
-
 int main() {
-char myname
 
-  printf( "Olá eu sou o Nº 1, como é seu nome?");
-  printf("Meu nome é: %c",myname);
-  scanf("%c",&myname);
-  prinf("Bem-vindo ao clube my name )"
+char myname[15];
+  printf( "Olá eu sou o Nº 1, como é seu nome?\n");
+  printf("Meu nome é: ");
+  scanf("%s",&myname);
+  printf("Bem-vindo ao clube %s",myname);
+  
+return 0;
+}
 
+/*C)Escreva um programa que pergunte o nome e a idade de um indivíduo e imprima (aproximadamente)
+quantos dias de vida ele possui.*/
 
+#include <stdio.h>
+int main() {
 
+int anos,int;
+  printf( "Olá quantos anos voce tem?\n");
+  printf("Tenho: ");
+  scanf("%d",&anos);
+  dias = anos * 365;
+  printf("Voce tem aproximadamente %d de vida",dias);
+  scanf("%d",&dias);
 
+return 0;
+}
 
+//D)Escreva um programa que pergunte qual o raio de um círculo e imprima a sua área.
+
+#include <stdio.h>
+#include <math.h>
+int main() {
+double pi, raio;
+pi = 3.14159;
+
+  printf( "Qual o raio da circunferencia?\n");
+  printf("O raio é: ");
+  scanf("%d",&raio);
+  area = pi * pow(raio,2);
+  printf("A área do círculo com raio %.2f é %.2f\n", raio, area););
+  scanf("%d",&area;
+
+return 0;
+}
+
+/* E)Faça um programa que calcule a quantidade necessária de latas de tinta para pintar uma parede.
+O programa pergunta a medidas de largura e altura da parede em metros e imprime o resultado (em
+latas de tinta). Considere que o consumo de tinta é de 300 ml por metro quadrado e a quantidade de
+tinta por lata é de 2 litros. */
+
+#include <stdio.h>
+#include <math.h>
+int main() {
+
+float altura,largura,ml,m_quadrado,total_ml;
+int latas;
+ml = 0.3;
+printf("Qual a altura da parede que deseja pintar: \n");
+scanf("%f",&altura);
+printf("Qual a largura da parede que deseja pintar: \n");
+scanf("%f",&largura);
+m_quadrado = altura * largura;
+printf("Para saber a quantidade de mL, é necessario fazer: %.2f * %.2f",m_quadrado,ml);
+scanf("%f",m_quadrado);
+total_ml = m_quadrado * ml;
+latas = 
 
 }
 
+//F)Escreva um programa que leia uma temperatura em graus Farenheit e a imprima em graus Centígrados. A conversão de graus Farenheit para Centígrados é obtida por C=(5/9)(F-32).
 
+#include <stdio.h>
+int main() {
+float F,C;
 
+printf( "Quantos graus Farenheit esta medindo hoje?\n");
+  printf("Esta medindo: ");
+  scanf("%f",&F);
+  C = (5.0/9.0)*(F-32);
+  printf("Convertendo esta %.2f° hoje",C);
+  scanf("%f",&C);
+  
+return 0;
 
+}
 
+//G)Escreva um programa que pergunte os seguintes dados referentes ao pneu de um automóvel:
 
+#include <stdio.h>
+int main() {
+float temp,vol,pressure,m_ar;
+
+printf("Qual sua temperatura\n");
+printf("A temperatura e: ");
+scanf("%f",&temp);
+
+ printf("Qual seu volume?\n");
+ printf("O volume e: ");
+ scanf("%f",&vol);
+
+ printf("Qual sua pressao?\n");
+ printf("A pressao e: ");
+ scanf("%f",&pressure);
+
+m_ar  = (temp + 460)/(pressure * vol)/0.37;
+ printf(" A massa do ar e %.2f: ",m_ar);
+ scanf("%f",&m_ar);
+  
+return 0;
+
+}
 
 
 
