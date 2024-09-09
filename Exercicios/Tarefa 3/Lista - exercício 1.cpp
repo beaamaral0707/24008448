@@ -14,7 +14,7 @@
 }
 
 //B)
- # include < stdio .h >
+ # include <stdio.h>
  int main () {
  printf ( " % d \ n " , a );
  int a ;
@@ -32,6 +32,33 @@
 //C)
  # include < stdio .h >
  int main () {
+ 
  printf ( " % d " , 4);
  printf ( " % d " , 2);
  return 0;
+ }
+
+// C) Corrigido
+
+//D)
+# include < stdio .h >
+ int main () {
+ int a ;
+ scanf ( " % d " , a );
+ printf ( " % d " , a );
+ return 0;
+ }
+
+
+
+//D) Corrigido
+ # include <stdio.h>
+ int main () {
+ int a ;
+ printf ( " % d " , a );
+ scanf ( " % d " , &a );
+ return 0;
+ }
+
+
+
