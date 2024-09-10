@@ -39,6 +39,13 @@
  }
 
 // C) Corrigido
+#include<stdio.h>
+
+int main(){
+    printf("%d\n", 4);
+    printf("%d\n", 2);
+return 0;
+}
 
 //D)
 # include < stdio .h >
@@ -48,8 +55,6 @@
  printf ( " % d " , a );
  return 0;
  }
-
-
 
 //D) Corrigido
  # include <stdio.h>
