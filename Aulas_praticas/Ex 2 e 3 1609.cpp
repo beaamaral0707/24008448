@@ -38,15 +38,15 @@ return 0;
 int main()
 {
 int num,mult = 1;
-printf("\n\t Digite o numero desejado da tabuada: \n");
+printf("\n\t Digite o numero desejado da tabuada: ");
 scanf("%d",&num);
-while (mult<=11)
+while (mult<11)
 {
-printf(" %d\n",a);
-a = num * mult++;
+printf(" %d x %d = %d \n",num,mult++,(num*mult));
 }
 return 0;
 }
+
 
 
 
