@@ -26,17 +26,18 @@ float med;
 printf("Quantos alunos possuem na sala: ");
 scanf("%d",&qnt_aln);
 
+for (int i = 1; i <= qnt_aln; qnt_aln++) {
 printf("Qual foi a nota 1 do aluno: \n");
 scanf("%d",&n1);
 
 printf("Qual foi a nota 2 do aluno: \n ");
 scanf("%d",&n2);
-
-for (int i = 1; i < qnt_aln; qnt_aln++) {
 med = (n1+n2)/2;
 if (med >= 5) {
-printf("Parabens voce foi aprovado :), sua media foi:%2.f ", med);
-} else { ("Sinto muito, voce foi reprovado :(, sua media foi: %2.f",med);}
+printf("Parabens voce foi aprovado :), sua media foi:%2.f \n", med);
+} else { 
+    ("Sinto muito, voce foi reprovado :(, sua media foi: %2.f \n",med);}
+}
 return 0;
-}}
+}
 
