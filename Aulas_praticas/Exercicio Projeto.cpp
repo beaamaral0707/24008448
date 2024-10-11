@@ -25,22 +25,22 @@ break;
 case 2:
 printf("Modelo: Fort KA\n");
 printf("Preco: R$\n");
-printf("Especificacao: , apaga lapis sem manchas.\n");
+printf("Especificações: , apaga lapis sem manchas.\n");
 break;
 case 3:
 printf("Modelo: Porsche GT3\n");
 printf("Preco: R$ \n");
-printf("Especificacao: , cores variadas.\n");
+printf("Especificações: , cores variadas.\n");
 break;
 case 4:
 printf("Modelo: Mustang 1970\n");
 printf("Preco: R$ \n");
-printf("Especificacao: , cores variadas.\n");
+printf("Especificações: , cores variadas.\n");
 break;
 case 5:
 printf("Modelo: Audi Q5\n");
 printf("Preco: R$ \n");
-printf("Especificacao: , cores variadas.\n");
+printf("Especificações: , cores variadas.\n");
 break;
     
 default:
