@@ -73,7 +73,7 @@ printf("Modo de pagamento escolhido: Parcelado sem valor de entrada:\n");
 break;
     
 default:
-printf("Erro: Modo de pagamento selecionada inválido!.\n");
+printf("Erro: Modo de pagamento selecionado inválido!.\n");
 break;  
 }
 
