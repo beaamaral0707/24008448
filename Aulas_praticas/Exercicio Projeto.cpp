@@ -18,9 +18,9 @@ scanf("%d", &num_modelo);
 printf("\n");
 
 printf( "\tModo de pagamento:\t \n");
-printf("1. À vista: \n");
-printf("2. Parcelamento com entrada: \n");
-printf("3. Parcelamento sem entrada:  \n");
+printf("1. À vista \n");
+printf("2. Parcelamento com entrada \n");
+printf("3. Parcelamento sem entrada  \n");
 printf("Escolha o modo de pagamento desejado (1-3): ");
 scanf("%d", &mod_pag);
 printf("\n");
