@@ -3,23 +3,39 @@
 #include <stdio.h>
 
 int main() {
-    char nome[255]; 
+    char nome[255];  //declara o tipo da variavel
 
-    printf("Olá! Qual é o seu nome?\n");
+    printf("Olá! Qual é o seu nome?\n"); //Pergunta o nome da pessoa
     
-    printf("Meu nome é ");
-    scanf("%254s", nome);
+    printf("Meu nome é "); // local onde insere o nome da pessoa
+    scanf("%254s", nome); // armazena o dado
 
-    printf("Seja bem-vindo!Prazer em te conhecer:%s\n", nome);
+    printf("Seja bem-vindo!Prazer em te conhecer:%s\n", nome); // Mostra na tela o resultado do código formatado 
 
     return 0;
 }
 //5) Elabore um programa em Linguagem C, que solicite o último dígito do seu
 //RA e imprima na tela se seu RA é par ou ímpar;
+#include <stdio.h>
 
+int main() {
+    int RA_ult; // variavel para o ultimo do RA
+    int par_impar; // variavel para comparação do ultimo numero por 2, para ver se há resto
 
+    printf("Olá! Insira o último número do seu RA.\n"); // requisição para o RA
+    
+    printf("O último número do meu RA é:"); // local onde insere o ultimo numero do RA
+    scanf("%d", &RA_ult); // armazena o dado
 
+    par_impar = RA_ult % 2; // comparação para o resto da divisão por 2
+        
+    if ( par_impar == 0){
+        printf("O último número do seu RA é um número par\n");}
+    else { 
+        printf("O último número do seu RA é um número ímpar\n");} 
 
+    return 0;
+}
 
 //8) Elabore um programa em Linguagem C, que solicite ao utilizador a
 //temperatura em graus Celsius e a converta para Fahrenheit. A fórmula de
