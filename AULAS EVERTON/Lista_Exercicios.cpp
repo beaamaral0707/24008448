@@ -3,17 +3,18 @@
 #include <stdio.h>
 
 int main() {
-    char nome[255];  //declara o tipo da variavel
+    char nome[255];  // declara a variável para armazenar o nome
 
-    printf("Olá! Qual é o seu nome?\n"); //Pergunta o nome da pessoa
+    printf("Olá! Qual é o seu nome?\n"); // Pergunta o nome da pessoa
     
-    printf("Meu nome é "); // local onde insere o nome da pessoa
-    scanf("%254s", nome); // armazena o dado
+    printf("Meu nome é: "); // local onde insere o nome da pessoa
+    fgets(nome, sizeof(nome), stdin); // lê inclusive os espaços
 
-    printf("Seja bem-vindo!Prazer em te conhecer:%s\n", nome); // Mostra na tela o resultado do código formatado 
+    printf("Seja bem-vindo! Prazer em te conhecer: %s\n", nome); // Mostra na tela o resultado formatado
 
     return 0;
 }
+
 //5) Elabore um programa em Linguagem C, que solicite o último dígito do seu
 //RA e imprima na tela se seu RA é par ou ímpar;
 #include <stdio.h>
