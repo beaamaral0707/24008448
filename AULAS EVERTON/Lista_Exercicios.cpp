@@ -56,3 +56,29 @@ fahrenheit=((celsius * 9.0/5.0) + 32 );
 printf("A temperatura inserida em Fahrenheit sera de:%.2f\n ",fahrenheit);
 
 return 0;}
+
+
+//Lista dois  
+#include <stdio.h>
+
+void t(int *x, int *y) { // Função que troca os valores de duas variáveis, declara os ponteiros
+    int temp = *x; //armazena o valor de x, na variável memoria
+    *x = *y; //joga o valor de y na variável y
+    *y = temp; //pega o valor armazenado e coloca na variavel temp
+}
+
+int main() {
+    int a, b;
+
+  printf("Digite o valor de a: "); //pra inserir o valor de a
+    scanf("%d", &a); //armazena o valor inserido
+
+    printf("Digite o valor de b: "); //pra inserir o valor de b
+    scanf("%d", &b); //armazena o valor inserido
+    
+    t(&b, &a);  // chama a função de troca 
+
+    printf("Depois da troca: a = %d, b = %d\n", a, b); //mostra os valores inseridos
+
+    return 0;
+}
