@@ -1,0 +1,173 @@
+#include <stdio.h> //biblioteca padrão
+#include <stdlib.h>// biblioteca de alocação de memória
+#include <string.h> // biblioteca para manipular strings
+
+#define MAX 50 // definindo o máximo da lista
+
+typedef struct { // estrutura de lista
+    int matricula; //definindo a variavel matricula
+    char nome[50]; //definindo o tipo da variavel nome e seu comprimento
+    char campus[50]; //definindo o tipo da variavel campus e seu comprimento
+    char curso[50]; //definindo o tipo da variavel curso seu comprimento
+} Aluno;
+
+typedef struct { //estrutura de lista
+    Aluno dados[MAX]; // quantidade máxima de alunos
+    int qtd; // quantidade atual
+} Lista;
+
+Lista* criarLista() { // cria uma nova lista
+    Lista *li = malloc(sizeof(Lista)); // alocação de memória
+    if (li != NULL)
+        li->qtd = 0; //inicializa em 0
+    return li; // retorna o ponteiro
+}
+
+void liberarLista(Lista* li) {
+    free(li);
+}
+
+int inserirAluno(Lista* li, Aluno al) {
+    if (li == NULL) return 0;
+    if (li->qtd == MAX) return 0;
+
+    int i, k = 0;
+    while (k < li->qtd && li->dados[k].matricula < al.matricula) {
+        k++;
+    }
+    for (i = li->qtd - 1; i >= k; i--) {
+        li->dados[i+1] = li->dados[i];
+    }
+    li->dados[k] = al;
+    li->qtd++;
+    return 1;
+}
+
+int removerAluno(Lista* li, int matricula) {
+    if (li == NULL || li->qtd == 0) return 0;
+
+    int i, k = 0;
+    while (k < li->qtd && li->dados[k].matricula != matricula) {
+        k++;
+    }
+    if (k == li->qtd) return 0;
+
+    for (i = k; i < li->qtd-1; i++) {
+        li->dados[i] = li->dados[i+1];
+    }
+    li->qtd--;
+    return 1;
+}
+
+int consultarAluno(Lista* li, int matricula, Aluno *al) {
+    if (li == NULL || li->qtd == 0) return 0;
+
+    int i = 0;
+    while (i < li->qtd && li->dados[i].matricula < matricula) {
+        i++;
+    }
+    if (i == li->qtd || li->dados[i].matricula != matricula) return 0;
+
+    *al = li->dados[i];
+    return 1;
+}
+
+void listarAlunos(Lista* li) {
+    if (li == NULL || li->qtd == 0) {
+        printf("Lista vazia!\n");
+        return;
+    }
+    for (int i = 0; i < li->qtd; i++) {
+        printf("Matricula: %d\n", li->dados[i].matricula);
+        printf("Nome: %s\n", li->dados[i].nome);
+        printf("Campus: %s\n", li->dados[i].campus);
+        printf("Curso: %s\n", li->dados[i].curso);
+        printf("-------------------------\n");
+    }
+}
+
+void carregarAlunosIniciais(Lista *li) {
+    Aluno alunos[4] = {
+        {101, "Ketlen Brito", "Campus 1", "Engenharia"},
+        {102, "Luiz Assim", "Campus 1", "Direito"},
+        {103, "Vitor Cesar", "Campus 2", "Medicina"},
+        {104, "Beatriz Amaral", "Campus Centro", "Ciencia da Computacao"}
+    };
+
+    for (int i = 0; i < 4; i++) {
+        inserirAluno(li, alunos[i]);
+    }
+}
+
+int main() {
+    Lista *turma1 = criarLista();
+    carregarAlunosIniciais(turma1);
+
+    int opcao;
+    do {
+        printf("\n===== MENU =====\n");
+        printf("1 - Inserir aluno\n");
+        printf("2 - Consultar aluno\n");
+        printf("3 - Remover aluno\n");
+        printf("4 - Listar alunos\n");
+        printf("5 - Inicializar lista\n");
+        printf("0 - Sair\n");
+        printf("Escolha uma opcao: \n");
+        scanf("%d", &opcao);
+        getchar();
+
+        if (opcao == 1) {
+            Aluno al;
+            printf("Matricula: ");
+            scanf("%d", &al.matricula);
+            getchar();
+            printf("Nome: ");
+            fgets(al.nome, 50, stdin);
+            al.nome[strcspn(al.nome, "\n")] = '\0';
+            printf("Campus: ");
+            fgets(al.campus, 50, stdin);
+            al.campus[strcspn(al.campus, "\n")] = '\0';
+            printf("Curso: ");
+            fgets(al.curso, 50, stdin);
+            al.curso[strcspn(al.curso, "\n")] = '\0';
+
+            if (inserirAluno(turma1, al))
+                printf("Aluno inserido com sucesso!\n");
+            else
+                printf("Erro ao inserir aluno!\n");
+        }
+        else if (opcao == 2) {
+            int mat;
+            printf("Digite a matricula: ");
+            scanf("%d", &mat);
+            Aluno al;
+            if (consultarAluno(turma1, mat, &al)) {
+                printf("Matricula: %d\nNome: %s\nCampus: %s\nCurso: %s\n",
+                       al.matricula, al.nome, al.campus, al.curso);
+            } else {
+                printf("Aluno nao encontrado!\n");
+            }
+        }
+        else if (opcao == 3) {
+            int mat;
+            printf("Digite a matricula para remover: ");
+            scanf("%d", &mat);
+            if (removerAluno(turma1, mat))
+                printf("Aluno removido com sucesso!\n");
+            else
+                printf("Aluno nao encontrado!\n");
+        }
+        else if (opcao == 4) {
+            listarAlunos(turma1);
+        }
+        else if (opcao == 5) {
+            liberarLista(turma1);
+            turma1 = criarLista();
+            carregarAlunosIniciais(turma1);
+            printf("Lista inicializada com os 4 alunos novamente!\n");
+        }
+    } while (opcao != 0);
+
+    liberarLista(turma1);
+    return 0;
+}
