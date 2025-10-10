@@ -87,18 +87,18 @@ void listarAlunos(Lista* li) {
 }
 
 void carregarAlunosIniciais(Lista *li) { //função que traz a lista inicial alocada na memória
-    Aluno alunos[4] = {
+    Aluno alunos[8] = {
         {101, "Ketlen Brito", "Campus 1", "Engenharia"},
         {102, "Luiz Assim", "Campus 1", "Direito"},
         {103, "Vitor Cesar", "Campus 2", "Medicina"},
-        {104, "Beatriz Amaral", "Campus 1", "Ciencia da Computacao"}
-        {105, "Thais ", "Campus 1", "Marketing"}
-        {106, "Evelyn", "Campus 2", "Psicologia"}
-        {107, "Camila", "Campus 1", "Artes visuais"}
-        {108, "Luana", "Campus 1", "Administração"}
+        {104, "Beatriz Amaral", "Campus 1", "Ciencia da Computacao"},
+        {105, "Thais ", "Campus 1", "Marketing"},
+        {106, "Evelyn", "Campus 2", "Psicologia"},
+        {107, "Camila", "Campus 1", "Artes visuais"},
+        {108, "Luana", "Campus 1", "Administração"},
     };
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
         inserirAluno(li, alunos[i]);
     }
 }
