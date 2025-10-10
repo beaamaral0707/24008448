@@ -42,7 +42,7 @@ int inserirAluno(Lista* li, Aluno al) {
     li->qtd++;
     return 1;
 }
-
+//Função para remover o aluno da lista
 int removerAluno(Lista* li, int matricula) {
     if (li == NULL || li->qtd == 0) return 0;
 
@@ -58,7 +58,7 @@ int removerAluno(Lista* li, int matricula) {
     li->qtd--;
     return 1;
 }
-
+//Função para consultar individualmente um aluno da lista
 int consultarAluno(Lista* li, int matricula, Aluno *al) {
     if (li == NULL || li->qtd == 0) return 0;
 
@@ -71,7 +71,7 @@ int consultarAluno(Lista* li, int matricula, Aluno *al) {
     *al = li->dados[i];
     return 1;
 }
-
+//Função para consulta da lista
 void listarAlunos(Lista* li) {
     if (li == NULL || li->qtd == 0) {
         printf("Lista vazia!\n");
@@ -86,12 +86,16 @@ void listarAlunos(Lista* li) {
     }
 }
 
-void carregarAlunosIniciais(Lista *li) {
+void carregarAlunosIniciais(Lista *li) { //função que traz a lista inicial alocada na memória
     Aluno alunos[4] = {
         {101, "Ketlen Brito", "Campus 1", "Engenharia"},
         {102, "Luiz Assim", "Campus 1", "Direito"},
         {103, "Vitor Cesar", "Campus 2", "Medicina"},
-        {104, "Beatriz Amaral", "Campus Centro", "Ciencia da Computacao"}
+        {104, "Beatriz Amaral", "Campus 1", "Ciencia da Computacao"}
+        {105, "Thais ", "Campus 1", "Marketing"}
+        {106, "Evelyn", "Campus 2", "Psicologia"}
+        {107, "Camila", "Campus 1", "Artes visuais"}
+        {108, "Luana", "Campus 1", "Administração"}
     };
 
     for (int i = 0; i < 4; i++) {
@@ -104,7 +108,7 @@ int main() {
     carregarAlunosIniciais(turma1);
 
     int opcao;
-    do {
+    do { //Repetição da inicialização do menu
         printf("\n===== MENU =====\n");
         printf("1 - Inserir aluno\n");
         printf("2 - Consultar aluno\n");
@@ -116,7 +120,7 @@ int main() {
         scanf("%d", &opcao);
         getchar();
 
-        if (opcao == 1) {
+        if (opcao == 1) { //condição de comparação para seleção das ações do menu - Inserir aluno
             Aluno al;
             printf("Matricula: ");
             scanf("%d", &al.matricula);
@@ -136,7 +140,7 @@ int main() {
             else
                 printf("Erro ao inserir aluno!\n");
         }
-        else if (opcao == 2) {
+        else if (opcao == 2) {//condição de comparação para seleção das ações do menu - Consultar indivualmente um aluno
             int mat;
             printf("Digite a matricula: ");
             scanf("%d", &mat);
@@ -148,7 +152,7 @@ int main() {
                 printf("Aluno nao encontrado!\n");
             }
         }
-        else if (opcao == 3) {
+        else if (opcao == 3) {//condição de comparação para seleção das ações do menu - Remover aluno
             int mat;
             printf("Digite a matricula para remover: ");
             scanf("%d", &mat);
@@ -157,16 +161,16 @@ int main() {
             else
                 printf("Aluno nao encontrado!\n");
         }
-        else if (opcao == 4) {
+        else if (opcao == 4) { //condição de comparação para seleção das ações do menu - Trazer a lista atual
             listarAlunos(turma1);
         }
-        else if (opcao == 5) {
+        else if (opcao == 5) { //condição de comparação para seleção das ações do menu - Trazer a lista inicial
             liberarLista(turma1);
             turma1 = criarLista();
             carregarAlunosIniciais(turma1);
-            printf("Lista inicializada com os 4 alunos novamente!\n");
+            printf("Lista inicializada com os 8 alunos iniciais!\n");
         }
-    } while (opcao != 0);
+    } while (opcao != 0); //Condição de fechamento de loop
 
     liberarLista(turma1);
     return 0;
