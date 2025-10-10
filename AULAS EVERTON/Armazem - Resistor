@@ -1,0 +1,44 @@
+#include <stdio.h> //biblioteca padrão
+#include <stdlib.h>// biblioteca de alocação de memória
+#include <string.h> // biblioteca para manipular strings
+
+#define MAX 50 // definindo o máximo da lista
+
+typedef struct { // estrutura de lista
+    int ressitencia; //definindo a variavel matricula
+    char ohm[2]; //definindo o tipo da variavel ohm e seu comprimento
+} Estoque;
+
+typedef struct { //estrutura de lista
+    Estoque dados[MAX]; // quantidade máxima de resistores
+    int qtd; // quantidade atual
+} Lista;
+
+Lista* criarLista() { // cria uma nova lista
+    Lista *li = malloc(sizeof(Lista)); // alocação de memória
+    if (li != NULL)
+        li->qtd = 0; //inicializa em 0
+    return li; // retorna o ponteiro
+}
+
+
+int inserirResistor(Lista* li, Estoque al) {
+    if (li == NULL) return 0;
+    if (li->qtd == MAX) return 0;
+
+    int i, k = 0;
+    while (k < li->qtd && li->dados[k].resistencia < al.resistencia) {
+        k++;
+    }
+    for (i = li->qtd - 1; i >= k; i--) {
+        li->dados[i+1] = li->dados[i];
+    }
+    li->dados[k] = al;
+    li->qtd++;
+    return 1;
+}
+No* inserirOrdenado(No *lista, char ohm) {
+    No *novo = criaNo(prioridade);
+void liberarLista(Lista* li) {
+    free(li);
+}
