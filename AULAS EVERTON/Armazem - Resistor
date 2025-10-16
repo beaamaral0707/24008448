@@ -1,12 +1,15 @@
 #include <stdio.h> //biblioteca padrão
 #include <stdlib.h>// biblioteca de alocação de memória
 #include <string.h> // biblioteca para manipular strings
+#include <math.h> // Para a função fabs
 
 #define MAX 50 // definindo o máximo da lista
+#define TAM_STR_OHM 10 // Tamanho maior para formatar a string de resistência
 
-typedef struct { // estrutura de lista
-    int ressitencia; //definindo a variavel matricula
-    char ohm[2]; //definindo o tipo da variavel ohm e seu comprimento
+// --- ESTRUTURAS DE DADOS ---
+typedef struct { // estrutura de estoque (resistor)
+    int resistencia_base; // Valor de resistência como um inteiro (para ordenação)
+    char ohm[TAM_STR_OHM]; // Unidade e valor formatado (ex: "10 kΩ")
 } Estoque;
 
 typedef struct { //estrutura de lista
@@ -14,31 +17,247 @@ typedef struct { //estrutura de lista
     int qtd; // quantidade atual
 } Lista;
 
-Lista* criarLista() { // cria uma nova lista
+// --- FUNÇÕES DE UTILIDADE ---
+
+// Função para formatar o valor de resistência (double) para a unidade apropriada (mΩ, Ω, kΩ, MΩ)
+void unidade_ohm (double o, char *out, size_t out_size) {
+    double val = o;
+    const char * unit = "Ω";
+    
+    // Converte para a unidade mais apropriada para leitura
+    if (fabs(o) < 1.0) {
+        val = o * 1e3;
+        unit = "mΩ"; 
+    } else if (o < 1e3) {
+        val = o;
+        unit = "Ω";
+    } else if (o < 1e6) {
+        val = o / 1e3;
+        unit = "kΩ";
+    } else {
+        val = o / 1e6;
+        unit = "MΩ";
+    }
+
+    // Formata a saída: usa %.2f para duas casas decimais
+    snprintf(out, out_size, "%.2f %s", val, unit);
+}
+
+
+// --- FUNÇÕES DA LISTA ---
+
+// Cria uma nova lista
+Lista* criarLista() { 
     Lista *li = malloc(sizeof(Lista)); // alocação de memória
     if (li != NULL)
         li->qtd = 0; //inicializa em 0
     return li; // retorna o ponteiro
 }
 
+// Libera a memória alocada para a lista
+void liberarLista(Lista *li) {
+    if (li != NULL)
+        free(li);
+}
 
-int inserirResistor(Lista* li, Estoque al) {
-    if (li == NULL) return 0;
-    if (li->qtd == MAX) return 0;
+// Insere um resistor na lista de forma ordenada pela 'resistencia_base'
+int inserirresistencia(Lista* li, Estoque al) {
+    if (li == NULL || li->qtd == MAX) return 0;
 
     int i, k = 0;
-    while (k < li->qtd && li->dados[k].resistencia < al.resistencia) {
+    // Encontra a posição correta (k) para manter a ordem
+    while (k < li->qtd && li->dados[k].resistencia_base < al.resistencia_base) {
         k++;
     }
+    // Move os elementos para abrir espaço
     for (i = li->qtd - 1; i >= k; i--) {
         li->dados[i+1] = li->dados[i];
     }
+    // Insere o novo elemento
     li->dados[k] = al;
     li->qtd++;
     return 1;
 }
-No* inserirOrdenado(No *lista, char ohm) {
-    No *novo = criaNo(prioridade);
-void liberarLista(Lista* li) {
-    free(li);
+
+// Remove um resistor da lista pela sua 'resistencia_base'
+int removerresistencia(Lista* li, int resistencia_base) {
+    if (li == NULL || li->qtd == 0) return 0;
+
+    int i, k = 0;
+    // Busca a posição do resistor a ser removido
+    while (k < li->qtd && li->dados[k].resistencia_base != resistencia_base) {
+        k++;
+    }
+    // Se k == li->qtd, o resistor não foi encontrado
+    if (k == li->qtd) return 0;
+
+    // Move os elementos para trás para cobrir o espaço removido
+    for (i = k; i < li->qtd-1; i++) {
+        li->dados[i] = li->dados[i+1];
+    }
+    li->qtd--;
+    return 1;
 }
+
+// Consulta um resistor na lista pela 'resistencia_base'
+// CORREÇÃO: o terceiro argumento deve ser Estoque*
+int consultarLista(Lista* li, int resistencia_base, Estoque *al) {
+    if (li == NULL || li->qtd == 0) return 0;
+
+    int i = 0;
+    // Busca a posição do resistor
+    while (i < li->qtd && li->dados[i].resistencia_base < resistencia_base) {
+        i++;
+    }
+    // Verifica se a resistência foi encontrada
+    if (i == li->qtd || li->dados[i].resistencia_base != resistencia_base) return 0;
+
+    // Copia os dados do resistor encontrado para o ponteiro 'al'
+    *al = li->dados[i];
+    return 1;
+}
+
+// Função para consulta da lista (listagem)
+void listarEstoque(Lista* li) {
+    if (li == NULL || li->qtd == 0) {
+        printf("Lista vazia!\n");
+        return;
+    }
+    for (int i = 0; i < li->qtd; i++) {
+        printf("ID (para busca/remocao): %d\n", li->dados[i].resistencia_base);
+        printf("Resistencia: %s\n", li->dados[i].ohm);
+        printf("-------------------------\n");
+    }
+}
+
+// Função para popular a lista com valores iniciais
+void carregarResistoresIniciais(Lista *li) { 
+    // Resistores iniciais com ID (para ordenacao/busca) e valor (para formatacao)
+    struct {
+        int id;
+        double valor_ohmico;
+     }  resistores[17] = {
+        {101, 0.005},      
+        {102, 10.0},       
+        {103, 470.0},      
+        {104, 1000.0},   
+        {105, 47000.0},  
+        {106, 1000000.0},  
+        {107, 1000.0},    
+        {108, 0.047},     
+        {109, 1.0},
+        {110, 47.0},
+        {111, 120.0},
+        {112, 330.0},
+        {113, 2200.0},
+        {114, 3300.0},
+        {115, 15000.0},
+        {116, 68000.0},
+        {117, 470000.0},
+    };
+
+    Estoque item;
+    for (int i = 0; i < 17; i++) {
+        item.resistencia_base = resistores[i].id;
+        // Chama a função de formatação para popular o campo 'ohm'
+        unidade_ohm(resistores[i].valor_ohmico, item.ohm, TAM_STR_OHM);
+        inserirresistencia(li, item);
+    }
+}
+
+
+// --- FUNÇÃO PRINCIPAL ---
+
+int main() {
+    Lista *estoque = criarLista();
+    carregarResistoresIniciais(estoque);
+
+    int opcao;
+    do { //Repetição da inicialização do menu
+        printf("\n===== ESTOQUE DE RESISTORES =====\n");
+        printf("1 - Inserir Resistor\n");
+        printf("2 - Consultar Resistor por ID\n");
+        printf("3 - Remover Resistor por ID\n");
+        printf("4 - Listar Estoque\n");
+        printf("5 - Inicializar Estoque\n");
+        printf("0 - Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+        getchar(); // Consome o \n
+
+        if (opcao == 1) { // Inserir resistor
+            Estoque item;
+            double valor_ohmico;
+
+            printf("ID do Resistor (para busca/remocao): ");
+            scanf("%d", &item.resistencia_base);
+            getchar(); 
+
+            printf("Valor Ohmico (Ex: 10, 0.047, 47000): ");
+            scanf("%lf", &valor_ohmico);
+            getchar(); 
+
+            // Formata a string de unidade
+            unidade_ohm(valor_ohmico, item.ohm, TAM_STR_OHM);
+
+            if (inserirresistencia(estoque, item))
+                printf("Resistor inserido com sucesso! (%s)\n", item.ohm);
+            else
+                printf("Erro ao inserir resistor (Lista cheia ou falha).\n");
+        }
+        else if (opcao == 2) {// Consultar resistor individualmente
+            int id;
+            printf("Digite o ID do Resistor para consulta: ");
+            scanf("%d", &id);
+            getchar();
+            
+            Estoque item_consultada;
+            if (consultarLista(estoque, id, &item_consultada)) {
+                printf("ID: %d\nResistencia: %s\n", 
+                        item_consultada.resistencia_base, item_consultada.ohm);
+            } else {
+                printf("Resistor com ID %d nao encontrado!\n", id);
+            }
+        }
+        else if (opcao == 3) {// Remover resistor
+            int id;
+            printf("Digite o ID do Resistor para remover: ");
+            scanf("%d", &id);
+            getchar();
+            
+            if (removerresistencia(estoque, id))
+                printf("Resistor com ID %d removido com sucesso!\n", id);
+            else
+                printf("Resistor com ID %d nao encontrado!\n", id);
+        }
+        else if (opcao == 4) { // Listar estoque atual
+            listarEstoque(estoque);
+        }
+        else if (opcao == 5) { // Inicializar lista
+            liberarLista(estoque);
+            estoque = criarLista();
+            carregarResistoresIniciais(estoque);
+            printf("Estoque inicializado com os 8 resistores padrao!\n");
+        }
+    } while (opcao != 0); // Condição de fechamento de loop
+
+    liberarLista(estoque);
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
