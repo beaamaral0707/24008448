@@ -7,7 +7,7 @@
 #define TAM_STR_OHM 10 // Tamanho da string para formatar a resistência
 #define TOLERANCIA 1e-6 // Tolerância para comparação de doubles
 
-// --- FUNÇÃO DIFERENCIAL 1: CALCULAR PREÇO UNITÁRIO ---
+// --- FUNÇÃO DIFERENCIAL: CALCULAR PREÇO UNITÁRIO ---
 // Estima o preço do resistor baseado na ordem de grandeza
 double calcular_preco(double o) {
     // Escala de custo base: R$ 0.10 (mΩ) a R$ 0.80 (MΩ)
@@ -36,13 +36,13 @@ double calcular_preco(double o) {
 
 // --- ESTRUTURAS DE DADOS (CORRIGIDAS) ---
 typedef struct {
-    double resistencia_ohm;         // REQUISITO: Valor real em Ohms (CHAVE DE ORDENAÇÃO)
-    int quantidade;                 // REQUISITO: Quantidade de resistores disponíveis
+    double resistencia_ohm;             // REQUISITO: Valor real em Ohms (CHAVE DE ORDENAÇÃO)
+    int quantidade;                     // REQUISITO: Quantidade de resistores disponíveis
     
     // Campos Auxiliares/Diferenciais:
-    int id_interno;                 // ID para buscas rápidas (Diferencial)
-    char ohm_formatado[TAM_STR_OHM]; // Valor formatado (para listagem, mΩ, kΩ, etc.)
-    double preco_unitario;           // Preço estimado (Diferencial)
+    int id_interno;                     // ID para buscas rápidas 
+    char ohm_formatado[TAM_STR_OHM];    // Valor formatado (para listagem, mΩ, kΩ, etc.)
+    double preco_unitario;              // DIFERENCIAL: Preço estimado
 } Resistor; 
 
 // Lista Sequencial Estática
@@ -59,7 +59,7 @@ void unidade_ohm (double o, char *out, size_t out_size) {
     double val = o;
     const char * unit = "Ω";
     
-    if (fabs(o) < 1e-3) { // Muito pequeno para ser mΩ (opcional, para valores < 1mΩ)
+    if (fabs(o) < 1e-3) {
         snprintf(out, out_size, "%.3f nΩ", o * 1e9);
         return;
     } else if (fabs(o) < 1.0) {
@@ -77,20 +77,6 @@ void unidade_ohm (double o, char *out, size_t out_size) {
     }
 
     snprintf(out, out_size, "%.2f %s", val, unit);
-}
-
-// Auxiliar para converter a string formatada em valor double real em Ohms (usado na listagem)
-double converter_ohm_para_double(const char *ohm_str) {
-    double valor_base;
-    char unidade[5];
-    if (sscanf(ohm_str, "%lf %s", &valor_base, unidade) != 2) return 0.0;
-
-    double multiplicador = 1.0;
-    if (unidade[0] == 'm') multiplicador = 1e-3; // mΩ
-    else if (unidade[0] == 'k') multiplicador = 1e3; // kΩ
-    else if (unidade[0] == 'M') multiplicador = 1e6; // MΩ
-
-    return valor_base * multiplicador;
 }
 
 
@@ -128,28 +114,25 @@ int inserirResistorOrdenado(Lista* li, Resistor novo_resistor) {
         return 0;
     }
 
-    // 1. Verificar se o resistor já existe
-    int index_existente = buscarIndicePorValor(li, novo_resistor.resistencia_ohm);
-    if (index_existente != -1) {
-        // Se existir, apenas repõe a quantidade (assumindo que "Inserir" é para adicionar novos tipos)
-        // Para este projeto, vamos apenas informar que ele já existe e não permitir a inserção de um NOVO TIPO.
-        printf("\nATENCAO: Resistor de %s ja existe (Posicao %d). Use a opcao 'Repor' para adicionar estoque.\n", 
-                novo_resistor.ohm_formatado, index_existente + 1);
+    // Verificar se o resistor já existe
+    if (buscarIndicePorValor(li, novo_resistor.resistencia_ohm) != -1) {
+        printf("\nATENCAO: Resistor de %s ja existe. Use a opcao 'Repor' para adicionar estoque.\n", 
+                novo_resistor.ohm_formatado);
         return 0;
     }
 
-    // 2. Buscar a posição correta para inserção ordenada
+    // Buscar a posição correta para inserção ordenada
     int k = 0;
     while (k < li->qtd && li->dados[k].resistencia_ohm < novo_resistor.resistencia_ohm) {
         k++;
     }
 
-    // 3. Deslocar elementos
+    // Deslocar elementos
     for (int i = li->qtd - 1; i >= k; i--) {
         li->dados[i+1] = li->dados[i];
     }
 
-    // 4. Inserir e atualizar a quantidade
+    // Inserir e atualizar a quantidade
     li->dados[k] = novo_resistor;
     li->qtd++;
     return 1;
@@ -248,37 +231,15 @@ void listarEstoqueTabela(Lista* li) {
                li->dados[i].id_interno,
                li->dados[i].ohm_formatado,
                li->dados[i].quantidade,
-               li->dados[i].preco_unitario);
+               li->dados[i].preco_unitario); // Exibe o diferencial
     }
     printf("=======================================================\n");
 }
 
 
-// --- FUNÇÃO DIFERENCIAL 2: ANÁLISE DE CUSTO ---
-void analisarCustoTotal(Lista *li) {
-    if (li == NULL || li->qtd == 0) {
-        printf("Estoque vazio. Nao ha custo a calcular.\n");
-        return;
-    }
-
-    double custo_total = 0.0;
-    int total_itens = 0;
-
-    for (int i = 0; i < li->qtd; i++) {
-        custo_total += li->dados[i].preco_unitario * li->dados[i].quantidade;
-        total_itens += li->dados[i].quantidade;
-    }
-
-    printf("\n--- ANALISE DO CUSTO TOTAL DO ESTOQUE ---\n");
-    printf("Total de Tipos de Resistores: %d\n", li->qtd);
-    printf("Total de Itens em Estoque: %d\n", total_itens);
-    printf("CUSTO TOTAL DE REPOSICAO ESTIMADO: R$ %.2f\n", custo_total);
-    printf("------------------------------------------\n");
-}
-
-
 // Função para popular a lista com valores iniciais
 void carregarResistoresIniciais(Lista *li) {
+    // Dados iniciais de exemplo
     struct {
         double valor_ohmico;
         int id;
@@ -298,9 +259,9 @@ void carregarResistoresIniciais(Lista *li) {
 
         // Preenche a estrutura Resistor
         item.resistencia_ohm = valor_ohmico;
-        item.quantidade = resistores[i].quantidade; // Quantidade inicial
+        item.quantidade = resistores[i].quantidade; 
         item.id_interno = resistores[i].id;
-        item.preco_unitario = calcular_preco(valor_ohmico);
+        item.preco_unitario = calcular_preco(valor_ohmico); // Diferencial
 
         // Formata a string para a listagem
         unidade_ohm(valor_ohmico, item.ohm_formatado, TAM_STR_OHM);
@@ -332,7 +293,6 @@ int main() {
         printf(" 5 - Retirar: Quantidade do Estoque\n");
         printf(" 6 - Repor: Quantidade no Estoque\n");
         printf(" 7 - Inicializar/Reinicializar Estoque\n");
-        printf(" 8 - DIFERENCIAL: Analise de Custo Total do Estoque\n"); // Item Diferencial
         printf(" 0 - Sair\n");
         printf("------------------------------------------------\n");
         printf("Escolha uma opcao: ");
@@ -368,7 +328,6 @@ int main() {
 
             if (inserirResistorOrdenado(estoque, novo))
                 printf("\nSUCESSO: Novo resistor %s (%d unidades) inserido e ordenado!\n", novo.ohm_formatado, novo.quantidade);
-            // Mensagens de erro são tratadas dentro da função
         }
         else if (opcao == 2) {// Consultar quantidade por valor Ohm
             printf("Digite o Valor da Resistencia (em Ohms) para consulta: ");
@@ -380,7 +339,7 @@ int main() {
                 printf("Resistencia: %s\n", item_consultado.ohm_formatado);
                 printf("ID Interno: %d\n", item_consultado.id_interno);
                 printf("Quantidade Disponivel: %d\n", item_consultado.quantidade);
-                printf("Preco Unitario: R$ %.2f\n", item_consultado.preco_unitario);
+                printf("Preco Unitario: R$ %.2f\n", item_consultado.preco_unitario); // Exibe o diferencial
                 printf("----------------\n");
             } else {
                 printf("\nERRO: Resistor de %.2f Ohms nao encontrado!\n", resistencia_busca);
@@ -410,9 +369,6 @@ int main() {
             estoque = criarLista();
             carregarResistoresIniciais(estoque);
             printf("\nAVISO: Estoque Reinicializado com sucesso (18 tipos padrao)!\n");
-        }
-        else if (opcao == 8) { // Item Diferencial: Análise de Custo
-            analisarCustoTotal(estoque);
         }
         else if (opcao != 0) {
              printf("\nOpcao invalida. Tente novamente.\n");
