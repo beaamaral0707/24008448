@@ -1,0 +1,171 @@
+#include <stdio.h>
+#include <stdlib.h> // Para uso do exit() se necessário
+
+#define max 50 //número máximo de elementos
+int topo = 0; // Armazena a quantidade de elementos na pilha 
+
+
+typedef struct {
+    
+    int aux_resto; // Campo que armazena o resto (o bit 0 ou 1)
+} Registro;
+
+// Cria um vetor pilha
+Registro pilha[max]; // Variável global
+
+// Protótipos das funções adaptadas
+void flush_in();
+void bit_novo(int resto); // Novo nome para inserir um BIT na pilha
+int retira_bit(); // Novo nome para remover (e retornar) um BIT da pilha
+void converter(); // A função principal de conversão
+void listar_binario(); // A função que imprime o binário (desempilha)
+void consultar_pilha(); //função para consulta
+
+// Função para limpar o buffer do teclado (mantida)
+void flush_in() {
+    int ch;
+    while ((ch = fgetc(stdin)) != EOF && ch != '\n') {}
+}
+// Função para inserir (PUSH)
+void bit_novo(int resto) {
+    if (topo < max) {
+        pilha[topo].aux_resto = resto; // Salva o resto (bit) no campo
+        topo++; // Atualiza a quantidade de elementos na pilha
+    } else {
+        printf("\n\n Pilha cheia!! \n\n");
+    }
+}
+
+// Função para REMOVER (POP) e retornar um elemento do topo
+int retira_bit() {
+    if (topo != 0) {
+        topo--; // Reduz a quantidade de elementos da pilha
+        return pilha[topo].aux_resto; // Retorna o resto (bit) do topo anterior
+    } else {
+        // Pilha vazia, retorna valor de erro
+        return -1; 
+    }
+}
+void converter() {
+    int decimal;
+    int quociente;
+    int resto;
+    
+    // Limpa a pilha antes de uma nova conversão
+    if (topo > 0) {
+        printf("\n Limpando conversão anterior. ");
+        topo = 0; // Reseta a pilha
+    }
+
+    printf("\n\n Inserir número decimal para conversão:\n");
+    printf("Digite o número inteiro: ");
+    
+    if (scanf("%d", &decimal) != 1 || decimal < 0) {
+        printf("\n\n Entrada inválida. Digite um número inteiro positivo.\n\n");
+        flush_in();
+        return;
+    }
+    
+    flush_in(); // Limpa buffer do teclado
+
+    if (decimal == 0) {
+        bit_novo(0); // O binário de 0 é 0
+        printf("\n número 0 inserido com sucesso!!! Use 3 para listar.\n\n");
+        return;
+    }
+    
+    quociente = decimal;
+    
+    // Processo de Conversão: Divisão sucessiva por 2 e empilhamento dos restos
+    while (quociente > 0) {
+        resto = quociente % 2; // 1: Calcula o resto
+        quociente = quociente / 2; // 3: Calcula o novo quociente
+        
+        bit_novo(resto); // 2: Salva (insere) o resto na pilha
+    }
+
+    printf("\n Conversão do número %d realizada com sucesso!!! Use 3 para listar o binário.\n\n", decimal);
+}
+
+void listar_binario() {
+    if (topo == 0) {
+        printf("\n\n Pilha Vazia. Converta um número decimal primeiro (Opção 1).\n\n");
+        return;
+    }
+
+    printf("\n\n Resultado da Conversão:\n");
+    printf("Binário: ");
+    
+    // Desempilha e imprime os restos na ordem correta
+    while (topo != 0) {
+        int bit = retira_bit(); // Pega e remove o bit
+        printf("%d", bit);
+    }
+}
+
+void consultar_pilha() {
+    if (topo == 0) {
+        printf("\n\n Pilha Vazia. Converta um número decimal primeiro (Opção 1).\n\n");
+        return;
+    }
+
+    printf("\n\n--- Consulta da Pilha ---\n");
+    printf("Quantidade de bits na pilha: %d\n", topo);
+    printf("Bits armazenados (da base ao topo): ");
+    
+    // Mostra os bits sem remover da pilha
+    for (int i = 0; i < topo; i++) {
+        printf("%d", pilha[i].aux_resto);
+        if (i < topo - 1) {
+            printf(" ");
+        }
+    }
+    
+    printf("\nPosição do topo: %d\n", topo);
+    printf("----------------------------\n\n");
+}
+
+// --- Função Principal (Menu) ---
+
+int main(void) {
+    int teste = 0; // variável auxiliar do menu
+    do { // criando um menu para chamar as funções:
+
+        // Imprime o cabeçalho do menu:
+        printf("\n--- Menu Conversor Pilha ---");
+        printf("\n1 - Inserir na pilha");
+        printf("\n2 - Consultar estado atual da pilha");
+        printf("\n3 - Listar resultado binário (desempilha)");
+        printf("\n4 - Encerrar programa");
+        printf("\n-------------------------------\n");
+        
+        // Verifica a leitura para evitar falhas
+        if (scanf("%d", &teste) != 1) {
+            printf("\nOpção inválida. Digite um número.\n");
+            flush_in();
+            continue; // Volta ao início do loop
+        }
+        flush_in(); // Salva a opção digitada pelo usuário
+
+        switch (teste) { // seleciona a função a ser chamada
+            case 1:
+                converter(); // Chamamos a função que faz a conversão e PUSH
+                break;
+            case 2:
+                consultar_pilha(); // Nova função de consulta
+                break;
+            case 3:
+                listar_binario(); // Lista o resultado final
+                break;
+            case 4:
+                teste = 0;
+                break;
+            default:
+                printf("\nOpção incorreta\n");
+                break;
+        }
+    } while (teste != 0);
+    
+    printf("\nPrograma encerrado. Obrigado!\n");
+    return 0;
+}
