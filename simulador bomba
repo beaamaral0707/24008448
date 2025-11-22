@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Simulador - ESP32 RFID Formulário</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;max-width:700px;margin:30px auto;padding:10px}
+  .locked{opacity:.5;pointer-events:none}
+  /* Estilos básicos para campos */
+  label{display:block;margin-top:12px}
+  input,select,button{width:100%;padding:8px;margin-top:6px;box-sizing:border-box}
+  .status{margin-top:12px;font-weight:bold; color: green;} 
+  pre{background:#f4f4f4;padding:8px;border-radius:4px;white-space: pre-wrap;}
+  
+  /* Estilo customizado para o campo "Valor" */
+  .input-with-label {
+    display: flex;
+    align-items: center;
+    gap: 5px; 
+    width: 100%;
+  }
+  .input-with-label input {
+    flex-grow: 1;
+    width: auto;
+    margin-top: 0; 
+  }
+  .input-with-label span {
+    padding: 8px 0;
+    margin-top: 6px;
+    font-weight: bold;
+    white-space: nowrap;
+    width: 25px;
+  }
+  
+  /* Botões Superiores */
+  .button-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+  }
+  .button-group button {
+      width: auto;
+      flex-grow: 1;
+      padding: 10px;
+  }
+
+  /* Login Manual - layout horizontal (mantido) */
+  .login-form {
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 20px;
+      background: #eee;
+  }
+  #loginForm {
+      display: flex;
+      flex-direction: row; 
+      gap: 10px;
+      align-items: flex-end; 
+  }
+    #loginForm label {
+        flex: 1;
+        margin-top: 0;
+    }
+    #loginForm button {
+        flex-basis: 120px;
+        margin-top: 0;
+    }
+    #loginForm input {
+        margin-top: 0;
+    }
+
+
+  /* 💥 FORMULÁRIO PRINCIPAL: Coluna Única Centralizada 💥 */
+  #myForm {
+      max-width: 450px; /* Reduz a largura máxima para dar aspecto de coluna */
+      margin: 20px auto; /* Centraliza o formulário principal */
+      padding: 0; /* Remove padding lateral */
+  }
+    
+    /* Garante que todos os grupos ocupem a largura máxima da coluna */
+    #myForm > div {
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+    /* Remove o agrupamento triplo para voltar à coluna única */
+    .form-group-triple {
+        display: block; 
+        margin-bottom: 15px;
+    }
+    .form-group-triple > div {
+        /* Garante que os campos fiquem na largura total da coluna */
+        width: 100%; 
+        margin-bottom: 15px;
+    }
+    .form-group-triple label {
+        margin-top: 0;
+    }
+
+    /* Remove o estilo de centralização para ID da Bomba, voltando à esquerda */
+    .form-group-row-center {
+        display: block;
+        margin-bottom: 20px;
+    }
+    .form-group-row-center > div {
+        width: 100%;
+        min-width: auto;
+    }
+
+    /* Campos de Entrada Individual (para Observação e Leito) - Agora padrão */
+    .form-group-single {
+        margin-bottom: 15px;
+        width: 100%;
+    }
+    .form-group-single label {
+        margin-top: 0;
+    }
+
+
+    /* Ajuste para o Fieldset - Estado da Bomba */
+    #myForm fieldset {
+        margin-bottom: 20px;
+        padding: 10px 10px 5px 10px; 
+        border: 1px solid #ccc; 
+    }
+
+    /* Estilo para o botão de envio */
+    #myForm button[type="submit"] {
+        display: block;
+        margin: 20px auto; /* Centraliza o botão na base da coluna */
+        max-width: 200px; 
+        width: 100%;
+    }
+
+  /* Estilos para Radio Buttons dentro do Fieldset */
+  .radio-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+  }
+  .radio-group div {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+  }
+  .radio-group input[type="radio"] {
+      width: auto; 
+      margin-top: 0;
+  }
+  .radio-group label {
+      display: inline;
+      margin-top: 0;
+      text-align: left;
+  }
+
+  /* Logs */
+  .log-container {
+    max-width: 650px; 
+    margin: 20px auto; 
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  #log-output {
+    max-height: 300px; 
+    overflow-y: scroll; 
+    border: 1px solid #ccc; 
+    padding: 10px; 
+    background-color: #f9f9f9; 
+    font-family: monospace;
+  }
+    /* Estilo para o Símbolo da PUC Campinas */
+  .logo-puc {
+      position: absolute; 
+      top: 10px; 
+      right: 10px; 
+      max-width: 100px; 
+      height: auto;
+  }
+</style>
+</head>
+<body>
+  
+  <img src="data:image/png;base64,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" alt="Símbolo da PUC Campinas" class="logo-puc">		
+  <h2>Simulador - Tela de Entrada (ESP32 Web)</h2>
+  <p>Utilize de seu crachá ou do usuário de Administrador para sua autenticação. A sessão expira após cada envio.</p>
+  
+  <div class="button-group">
+    <button id="simulateBtn">Simular RFID (gera UID aleatório)</button>
+    <button id="simulateCustom">Simular com UID customizado</button>
+    <button id="generatePdfBtn" style="background-color: #f44336; color: white;">Gerar PDF dos Registros</button>
+  </div>
+  
+  <div class="login-form">
+    <h3>Login Manual</h3>
+    <form id="loginForm" onsubmit="authenticateManual(event)">
+        <label>Usuário:
+            <input type="text" id="username" required placeholder="Digite o usuário">
+        </label>
+        <label>Senha:
+            <input type="password" id="password" required placeholder="Digite a senha">
+        </label>
+        <button type="submit">Autenticar</button>
+        <div id="loginStatus" class="login-status"></div>
+    </form>
+  </div>
+  <div id="status" class="status" style="margin-top: 20px;">Aguardando RFID/Login...</div>
+
+  <form id="myForm" class="locked" onsubmit="submitForm(event)">
+    <div class="form-group-row-center">
+        <div>
+            <label for="id_bomba">Identificação da Bomba:</label>
+            <input type="text" id="id_bomba" name="identificacao_bomba" required>
+        </div>
+    </div>
+
+    <fieldset>
+        <legend>Estado da Bomba</legend>
+        
+        <div class="radio-group">
+            <div>
+                <input type="radio" id="inicio" name="estado_bomba" value="inicio" required>
+                <label for="inicio">Início</label>
+            </div>
+            
+            <div>
+                <input type="radio" id="pausa" name="estado_bomba" value="pausa">
+                <label for="pausa">Pausa</label>
+            </div>
+        </div>
+    </fieldset>
+    
+    <div class="form-group-triple">
+        <div>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" required placeholder="Seu nome">
+        </div>
+        
+        <div>
+            <label for="valor">Valor pré programado:</label>
+            <div class="input-with-label">
+                <input type="text" id="valor" required placeholder="Digite um valor">
+                <span>mL</span>
+            </div>
+        </div>
+        
+        <div>
+            <label for="opcao">Motivos de pausa:</label>
+            <select id="opcao">
+                <option value="JC">JC - Jejum para cirurgia</option>
+                <option value="JE">JE - Jejum para exame</option>
+                <option value="JEXT">JEXT - Jejum para extubação</option>
+                <option value="Banho">Banho</option>
+                <option value="Transferencia">Transferência (de leito/setor)</option>
+                <option value="Medicacao">Medicação</option>
+                <option value="SNE">Perda de SNE</option>
+                <option value="TGI">TGI: Vômito, Diarreia, Distensão abdominal</option>
+                <option value="IC">IC - Instabilidade Clínica</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group-single">
+        <label for="comentario">Observação/Comentário:</label>
+        <input type="text" id="comentario" placeholder="Adicione uma nota (opcional)">
+    </div>
+
+    <div class="form-group-single">
+        <label for="leito">Leito do Paciente:</label>
+        <input type="text" id="leito" required placeholder="Ex: CTI 10A">
+    </div>
+        
+    <button type="submit">Enviar</button>
+  </form>
+
+  <div class="log-container">
+      <h3>Registro de Atividades (Logs)</h3>
+      <div id="log-output">
+          Carregando logs do servidor...
+      </div>
+      <p style="font-size: 12px; color: #666; margin-top: 5px;">Atualização automática a cada 3 segundos. Dados persistem no servidor.</p>
+  </div>
+
+
+<script>
+const { jsPDF } = window.jspdf;
+
+let authenticated = false;
+let uid = '';
+let authUntil = 0;
+const AUTH_TIMEOUT = 30000;
+const ADMIN_UID = 'ADMIN_LOGIN';
+
+// Credenciais Estáticas
+const ADMIN_USER = 'Administrador';
+const ADMIN_PASS = 'puccampinas';
+
+
+function updateUI(){
+  const status = document.getElementById('status');
+  const form = document.getElementById('myForm');
+  const loginFormDiv = document.querySelector('.login-form');
+  const loginStatus = document.getElementById('loginStatus');
+
+  if(authenticated && Date.now() < authUntil){
+    let expiryMsg = (uid !== ADMIN_UID) ? `(expira em ${Math.ceil((authUntil-Date.now())/1000)}s)` : '(Autenticação Manual)';
+    status.textContent = `Autenticado! UID: ${uid} ${expiryMsg}`;
+    form.classList.remove('locked');
+    loginFormDiv.style.display = 'none';
+    loginStatus.textContent = '';
+  } else {
+    status.textContent = 'Aguardando RFID/Login...';
+    form.classList.add('locked');
+    loginFormDiv.style.display = 'block';
+    authenticated = false;
+    uid = '';
+  }
+}
+
+// ----------------------------------------------------
+// Função de Autenticação Manual
+// ----------------------------------------------------
+function authenticateManual(ev) {
+    ev.preventDefault();
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    const loginStatus = document.getElementById('loginStatus');
+
+    if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        uid = ADMIN_UID;
+        authenticated = true;
+        // Sessão do administrador não expira por tempo, mas será encerrada após o envio
+        authUntil = Date.now() + (AUTH_TIMEOUT * 1000); 
+        updateUI();
+        document.getElementById('password').value = '';
+    } else {
+        loginStatus.textContent = 'Usuário ou senha incorretos.';
+    }
+}
+
+// ----------------------------------------------------
+// RFID: Funções de Simulação
+// ----------------------------------------------------
+function simulateRandom(){
+  const r = Math.floor(Math.random()*0xFFFFFF).toString(16).toUpperCase().padStart(6,'0');
+  simulateUID(r);
+}
+
+function simulateUID(u){
+  uid = u;
+  authenticated = true;
+  authUntil = Date.now() + AUTH_TIMEOUT;
+  updateUI();
+  
+  const iv = setInterval(()=>{
+    if(!authenticated || Date.now() > authUntil){
+      clearInterval(iv);
+      updateUI();
+    } else updateUI();
+  }, 500);
+}
+
+// ----------------------------------------------------
+// Funções de Envio e PDF
+// ----------------------------------------------------
+async function submitForm(ev){
+  ev.preventDefault();
+  
+  // Confirmação simples de que o formulário está ativo
+  if (!authenticated) {
+      alert("Erro: Formulário não está autenticado. Por favor, autentique-se novamente.");
+      return;
+  }
+  
+  const data = {
+    id_bomba: document.getElementById('id_bomba').value,
+    estado_bomba: document.querySelector('input[name="estado_bomba"]:checked').value,
+    nome: document.getElementById('nome').value,
+    valor_ml: document.getElementById('valor').value,
+    motivo_pausa: document.getElementById('opcao').value,
+    comentario: document.getElementById('comentario').value, 
+    leito: document.getElementById('leito').value, 
+    uid_origem: uid || 'N/A'
+  };
+  
+  // NOVO: Enviar dados para o endpoint /enviar do servidor Flask
+  try {
+    const response = await fetch('/enviar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    
+    if (response.ok) {
+        alert('Servidor recebeu e salvou os dados com sucesso!');
+        // Força a atualização dos logs logo após o envio
+        fetchLogs(); 
+    } else {
+        alert('Erro ao enviar dados para o servidor: ' + (result.mensagem || response.statusText));
+    }
+    
+  } catch (error) {
+    alert('Erro de conexão com o servidor Flask: Verifique se o server.py está rodando.');
+    console.error('Erro de envio:', error);
+  }
+
+  // Limpar campos
+  document.getElementById('id_bomba').value = '';
+  document.getElementById('nome').value = '';
+  document.getElementById('valor').value = '';
+  document.getElementById('comentario').value = ''; 
+  document.getElementById('leito').value = ''; 
+  
+  // ===================================================================
+  // SEGURANÇA: ENCERRA A SESSÃO APÓS O ENVIO (Logout)
+  // ===================================================================
+  // Invalida a sessão forçando a expiração.
+  authUntil = Date.now();
+  authenticated = false;
+  
+  // Atualiza a interface para bloquear o formulário imediatamente
+  updateUI(); 
+}
+
+function generatePDF() {
+    const logsElement = document.getElementById('log-output'); 
+    const logsText = logsElement.textContent;
+    
+    if (logsText.includes('Nenhum registro encontrado') || logsText.includes('Carregando logs') || logsText.length < 50) {
+        alert('Aguarde os logs serem carregados ou envie um formulário.');
+        return;
+    }
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    let y = margin;
+    const lineHeight = 10;
+    
+    doc.setFontSize(16);
+    doc.text("Relatório de Registros do Simulador ESP32", pageWidth / 2, y, { align: 'center' });
+    y += lineHeight * 2;
+
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    
+    const lines = doc.splitTextToSize(logsText, pageWidth - 2 * margin);
+    
+    lines.forEach(line => {
+        if (y > doc.internal.pageSize.getHeight() - margin) {
+            doc.addPage();
+            y = margin;
+        }
+        doc.text(line, margin, y);
+        y += lineHeight * 0.7;
+    });
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    doc.save(`relatorio_logs_${timestamp}.pdf`);
+}
+
+// ----------------------------------------------------
+// FUNÇÕES DE BUSCA DE LOGS
+// ----------------------------------------------------
+function fetchLogs() {
+    fetch('/logs')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao buscar logs: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(logs => {
+            const logOutput = document.getElementById('log-output');
+            
+            // Mapeia a lista de strings de log para elementos HTML
+            let logHTML = logs.map(log => {
+                return `<p style="margin: 2px 0; font-size: 13px; color: #333;">${log}</p>`;
+            }).join('');
+            
+            // Atualiza o container de logs
+            logOutput.innerHTML = logHTML || '<p style="color: #888;">Nenhum registro encontrado.</p>';
+        })
+        .catch(error => {
+            console.error('Erro de rede/servidor ao buscar logs:', error);
+            document.getElementById('log-output').innerHTML = `<p style="color: red; font-weight: bold;">[ERRO] Não foi possível conectar ao servidor /logs. Verifique se o server.py está rodando corretamente.</p>`;
+        });
+}
+
+
+// Event Listeners
+document.getElementById('simulateBtn').addEventListener('click', simulateRandom);
+document.getElementById('simulateCustom').addEventListener('click', ()=>{
+  const u = prompt('Digite o UID a simular (ex: ABCD1234):','ABCD1234');
+  if(u) simulateUID(u);
+});
+document.getElementById('generatePdfBtn').addEventListener('click', generatePDF);
+
+
+// Inicialização e Atualização Periódica
+updateUI();
+fetchLogs(); // Inicia a busca imediatamente
+setInterval(fetchLogs, 3000); // Atualiza a cada 3 segundos
+
+</script>
+</body>
+</html>
