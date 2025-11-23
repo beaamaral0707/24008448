@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -229,16 +230,16 @@
             </div>
             
             <div>
-                <input type="radio" id="pausa" name="estado_bomba" value="pausa">
-                <label for="pausa">Pausa</label>
+                <input type="radio" id="pausa" name="estado_bomba" value="pausada">
+                <label for="pausada">Pausada</label>
             </div>
         </div>
     </fieldset>
     
     <div class="form-group-triple">
         <div>
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" required placeholder="Seu nome">
+            <label for="nome">Nome do paciente:</label>
+            <input type="text" id="nome" required placeholder="Identificação do paciente">
         </div>
         
         <div>
@@ -261,6 +262,7 @@
                 <option value="SNE">Perda de SNE</option>
                 <option value="TGI">TGI: Vômito, Diarreia, Distensão abdominal</option>
                 <option value="IC">IC - Instabilidade Clínica</option>
+		<option value="Reinicio da bomba">Reinicio da bomba
             </select>
         </div>
     </div>
@@ -286,14 +288,14 @@
       <p style="font-size: 12px; color: #666; margin-top: 5px;">Atualização automática a cada 3 segundos. Dados persistem no servidor.</p>
   </div>
 
-
 <script>
 const { jsPDF } = window.jspdf;
 
 let authenticated = false;
 let uid = '';
 let authUntil = 0;
-const AUTH_TIMEOUT = 30000;
+// 🚀 ALTERAÇÃO AQUI: 90000 milissegundos = 90 segundos (1 minuto e meio)
+const AUTH_TIMEOUT = 90000; 
 const ADMIN_UID = 'ADMIN_LOGIN';
 
 // Credenciais Estáticas
@@ -335,7 +337,7 @@ function authenticateManual(ev) {
         uid = ADMIN_UID;
         authenticated = true;
         // Sessão do administrador não expira por tempo, mas será encerrada após o envio
-        authUntil = Date.now() + (AUTH_TIMEOUT * 1000); 
+        authUntil = Date.now() + AUTH_TIMEOUT; // Usa AUTH_TIMEOUT, que é 90000
         updateUI();
         document.getElementById('password').value = '';
     } else {
@@ -380,11 +382,12 @@ async function submitForm(ev){
   const data = {
     id_bomba: document.getElementById('id_bomba').value,
     estado_bomba: document.querySelector('input[name="estado_bomba"]:checked').value,
-    nome: document.getElementById('nome').value,
+    // 💡 ALTERAÇÃO AQUI: Renomeando o campo para 'nome_do_paciente' no JSON de envio
+    nome_do_paciente: document.getElementById('nome').value, 
     valor_ml: document.getElementById('valor').value,
     motivo_pausa: document.getElementById('opcao').value,
-    comentario: document.getElementById('comentario').value, 
-    leito: document.getElementById('leito').value, 
+    comentario: document.getElementById('comentario').value, 
+    leito: document.getElementById('leito').value, 
     uid_origem: uid || 'N/A'
   };
   
@@ -417,8 +420,8 @@ async function submitForm(ev){
   document.getElementById('id_bomba').value = '';
   document.getElementById('nome').value = '';
   document.getElementById('valor').value = '';
-  document.getElementById('comentario').value = ''; 
-  document.getElementById('leito').value = ''; 
+  document.getElementById('comentario').value = ''; 
+  document.getElementById('leito').value = ''; 
   
   // ===================================================================
   // SEGURANÇA: ENCERRA A SESSÃO APÓS O ENVIO (Logout)
@@ -510,7 +513,5 @@ document.getElementById('generatePdfBtn').addEventListener('click', generatePDF)
 updateUI();
 fetchLogs(); // Inicia a busca imediatamente
 setInterval(fetchLogs, 3000); // Atualiza a cada 3 segundos
-
-</script>
 </body>
 </html>
